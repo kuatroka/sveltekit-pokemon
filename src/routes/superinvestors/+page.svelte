@@ -1,23 +1,37 @@
 <script lang="ts">
+  import type { RowData } from "duckdb-async";
     import type { PageData } from "./$types";
-    export let data: PageData;
-    $: console.log(typeof data.entries)
+    import { page } from "$app/stores";
+  import { goto } from "$app/navigation";
+    export let data : PageData;
+    // $: console.log(typeof data.entries)
+
+    let cusipId: string;
+    $: cusip = data.entries.find((d) => d.cusip === cusipId);
+
+    const cusipClick = (entry: RowData) => {
+        cusipId = entry.cusip; 
+        // console.log(cusipId)  
+        goto(`?cusipId=${cusipId}`);
+}
+$: console.log('console.log for searchparams', $page.url.searchParams.get('cusipId'))
 </script>
+<h1>{cusipId}</h1>
+<h1>{cusip?.name}</h1>
 
 <!-- {JSON.stringify(Object.keys(data), null, 2)} -->
-
 
 <div class="ciks">
 {#each data.entries2 as entry (entry.cik)}
     <div class='cik'>{entry.cik}</div>
 {/each}
 </div>
-
-
-    
-    <div class="cusips">
-    {#each data.entries as entry (entry.cusip)}
-        <div class="cusip">
+  
+<div class="cusips">
+{#each data.entries as entry (entry.cusip)}
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+        <div class="cusip" on:click={() => cusipClick(entry)}>
             <div class="cusip-content">
                 {entry.name}<br>
                 {entry.value}$

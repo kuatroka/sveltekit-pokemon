@@ -1,9 +1,30 @@
 <script lang="ts">
     import type { PageData } from "./$types";
+    import { page } from "$app/stores";
+    import type { IndexMonster } from "./+page";
     import { generations } from "./generations";
+    import { goto } from "$app/navigation";
     export let data: PageData;
 
+    $: monsterId = $page.url.searchParams.get('monsterId') || '';
+    $: monster = data.monsters.find((entry) => entry.id === monsterId);
+
+    $: monsterId2 = $page.url.searchParams.get("monsterId2") || '';
+    $: monster2 = data.monsters.find((monster) => monster.id === monsterId2);
+    const updateSearchParams = (key: string, value: string) => {
+        const searchParams = new URLSearchParams($page.url.searchParams);
+        searchParams.set(key, value);
+        goto(`?${searchParams.toString()}`);
+        };
+
+    $: console.log($page.url.searchParams.get('monsterId'))
 </script>
+<h1>{monsterId}</h1>
+<h1>{monster?.name}</h1>
+<h1>{monsterId2}</h1>
+<h1>{monster2?.name}</h1>
+
+
 
 <div class="generations">
 {#each generations as generation (generation.id)}
@@ -14,13 +35,20 @@
 
 <div class="monsters">
 {#each data.monsters as monster (monster.id)}
-    <div class="monster">
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<div class="monster">
+    <div on:click={() => updateSearchParams('monsterId', monster.id)}>
         <div class="monster-content">
-            <img src={monster.image} alt={monster.name}>
+            <img src={monster.image} alt={monster.name} />
             {monster.name}
         </div>
         <div class="monster-id">
-        {monster.id}
+            {monster.id}
+        </div>
+        </div>
+        <div on:click={() => updateSearchParams('monsterId2', monster.id)}>
+            Add Monster 2
         </div>
     </div>
 {/each}

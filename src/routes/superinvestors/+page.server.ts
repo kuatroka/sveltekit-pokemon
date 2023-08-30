@@ -6,15 +6,16 @@ const conso_duckdb_file = './data/sec.duckdb';
 export async function load() {
     const db = await Database.create(conso_duckdb_file);
     let query_duckdb = `
-    SELECT 
-        cik,
+    SELECT DISTINCT ON (cusip)        
         cusip,
-        name_of_issuer AS name,
-        value_usd AS value,
-        cusip_ticker,
         quarter,
+        ANY_VALUE(name_of_issuer) AS name,
+        ANY_VALUE(cik) AS cik,
+        value_usd AS value,
+        cusip_ticker,        
         pct_pct
     FROM main.all_cik_quarter_cusip
+    group by all
     LIMIT 151`;
     console.time(query_duckdb);
     const response = await db.all(query_duckdb);
@@ -47,11 +48,14 @@ export async function load() {
     });
     console.timeEnd(query_duckdb2); 
 
+    const t = await db.prepare
+
     await db.close();
     console.log(entries.slice(0, 1));
     console.log(entries2.slice(0, 1));
     return { entries, entries2 };
 } 
+
 
 
 
