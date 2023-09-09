@@ -20,6 +20,9 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@types/better-sqlite3": "^7.6.4",
+		"better-sqlite3": "^8.6.0",
+		"duckdb": "^0.8.1",
 		"duckdb-async": "^0.8.1"
 	}
 }

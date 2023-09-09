@@ -11,4 +11,5 @@ vite.config.ts.timestamp-*
 *.duckdb
 *.parquet
 *.db
+*.sqlite
 

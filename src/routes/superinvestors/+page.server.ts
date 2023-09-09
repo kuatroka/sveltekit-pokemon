@@ -3,58 +3,62 @@ import { Database, type RowData } from "duckdb-async";
 const conso_duckdb_file = './data/sec.duckdb';
 
 
+
 export async function load() {
     const db = await Database.create(conso_duckdb_file);
-    let query_duckdb = `
-    SELECT DISTINCT ON (cusip)        
-        cusip,
-        quarter,
-        ANY_VALUE(name_of_issuer) AS name,
-        ANY_VALUE(cik) AS cik,
-        value_usd AS value,
-        cusip_ticker,        
-        pct_pct
-    FROM main.all_cik_quarter_cusip
-    group by all
-    LIMIT 151`;
-    console.time(query_duckdb);
-    const response = await db.all(query_duckdb);
 
-    const entries = response.map((entry: RowData) => {
-        return {
-            cusip: entry.cusip,
-            name: entry.name,
-            value: entry.value,
-            cusip_ticker: entry.cusip_ticker,
-            quarter: entry.quarter,
-            pct_pct: entry.pct_pct
-        } 
-    });
-    console.timeEnd(query_duckdb); 
-    
+    let query_duckdb = `
+    SELECT         
+        cusip,
+        name_of_issuer AS name,
+        quarter,
+        SUM(value) AS value,
+    FROM main.main
+    GROUP BY cusip, name, quarter
+    LIMIT 10`;
+
     let query_duckdb2 = `
     SELECT 
-        DISTINCT(cik) AS cik
-    FROM main.all_cik_quarter_cusip
+    cik
+    FROM main.main
     ORDER BY cik DESC
     LIMIT 10`;
-    console.time(query_duckdb2);
-    const response2 = await db.all(query_duckdb2);
 
-    const entries2 = response2.map((entry: RowData) => {
-        return {
-            cik: entry.cik
-        } 
-    });
-    console.timeEnd(query_duckdb2); 
+    console.time('query_duckdb');
+    console.time('query_duckdb2');
 
-    const t = await db.prepare
+    const [entries, entries2] = await Promise.all([
+        db.all(query_duckdb),
+        db.all(query_duckdb2)
+    ]);
+
+    console.timeEnd('query_duckdb');
+    console.timeEnd('query_duckdb2');
+
+    // const entries = response.map((entry: RowData) => {
+    //     return {
+    //         cusip: entry.cusip,
+    //         name: entry.name,
+    //         value: entry.value,
+    //         cusip_ticker: entry.cusip_ticker,
+    //         quarter: entry.quarter,
+    //         pct_pct: entry.pct_pct
+    //     } 
+    // });
+
+    // const entries2 = response2.map((entry: RowData) => {
+    //     return {
+    //         quarter: entry.quarter
+    //     } 
+    // });
 
     await db.close();
     console.log(entries.slice(0, 1));
     console.log(entries2.slice(0, 1));
     return { entries, entries2 };
 } 
+
+
 
 
 
