@@ -1,17 +1,22 @@
-import { getCik } from "$lib/server/db/sqlite";
+import { getCik, getCusip } from "$lib/server/db/sqlite";
 import { error} from '@sveltejs/kit';
 
-console.time("getCik")
-export function load({ params}) {
-    const cik = getCik(300);
+console.time("total")
+export function load() {
+    const cik = getCik();
     if (!cik) {
 		throw error(404, 'Album not found');
 	}
 
-    return  { cik  } ;
+    const cusip = getCusip();
+    if (!cusip) {
+		throw error(404, 'Album not found');
+	}
+
+    return  { cik, cusip } ;
 	};
 
-    console.timeEnd("getCik")
+console.timeEnd("total")
 
 
 

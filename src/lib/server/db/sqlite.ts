@@ -1,6 +1,6 @@
 import { SQLITE_PATH } from "$env/static/private";
 import Database from "better-sqlite3";
-import type { Track, Album, AlbumTrack, Cik } from "./types";
+import type { Track, Album, AlbumTrack, Cik, Cusip } from "./types";
 
 const db = new Database(SQLITE_PATH, {verbose: console.log}); // remove in prod
 
@@ -13,8 +13,28 @@ export function getCik(limit=50): Cik[] {
     const stmnt = db.prepare(sql);
     const rows = stmnt.all({ limit });
     return rows as Cik[];
-    console.log(rows.slice(0, 2))
+    // console.log(rows.slice(0, 2))
 };
+
+export function getCusip(limit=151): Cusip[] {
+    const sql = `
+    SELECT         
+        cusip,
+        cusip_ticker,
+        quarter,
+        value
+    FROM main
+    LIMIT $limit 
+    `;
+    const stmnt = db.prepare(sql);
+    const rows = stmnt.all({ limit });
+    return rows as Cusip[];
+    // console.log(rows.slice(0, 2))
+};
+
+
+
+
 
 // export function getInitialTracks(limit=50): Track[] {
 //     const sql = `

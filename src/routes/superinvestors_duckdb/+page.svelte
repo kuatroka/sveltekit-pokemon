@@ -1,51 +1,64 @@
 <script lang="ts">
     import type { PageData } from "./$types";
-  export let data: PageData;
+    import { page } from "$app/stores";
+    import { goto } from "$app/navigation";
+    export let data : PageData;
+
+
+    $: cusipId = $page.url.searchParams.get('cusipId') || '';
+    $: cusip = data.entries_cusip.find((d) => d.cusip === cusipId);
+
+    $: cusipId2 = $page.url.searchParams.get('cusipId2') || '';
+    $: cusip2 = data.entries_cusip.find((d) => d.cusip === cusipId2);
+
+    const updateSearchParams = (key: string, value: string) => {
+        const searchParams = new URLSearchParams($page.url.searchParams);
+        searchParams.set(key, value);
+        goto(`?${searchParams.toString()}`);
+        };
+
+
+$: console.log('console.log for searchparams', $page.url.searchParams.get('cusipId2'))
 
 </script>
-
-{#each data.cik as entry, i}
-<tr> {i + 1} -- {entry.cik} -- {entry.quarter}</tr>
-
-  <!-- <td>{i + 1} <br></td> -->
-
-{/each}
+<h1>{cusipId}</h1>
+<h1>{cusip?.name_of_issuer}</h1>
+<h1>{cusipId2}</h1>
+<h1>{cusip2?.name_of_issuer}</h1>
 
 
-{#each data.cusip as entry2, i}
-
-<tr> {i + 1} -- {entry2.cusip} -- {entry2.cusip_ticker}</tr>
-  <!-- <td>{i + 1} <br></td> -->
-
-{/each}
-<!-- <h1>{cusipId}</h1>
-<h1>{cusip?.name}</h1> -->
+<!-- {$page.url.searchParams.get('cusipId')} -->
 
 <!-- {JSON.stringify(Object.keys(data), null, 2)} -->
 
-<!-- <div class="ciks">
-{#each data.entries2 as entry (entry.cik)}
+<div class="ciks">
+{#each data.entries_cik as entry (entry.cik)}
     <div class='cik'>{entry.cik}</div>
 {/each}
-</div> -->
+</div>
   
-<!-- <div class="cusips">
-{#each data.entries as entry (entry.cusip)} -->
+<div class="cusips">
+{#each data.entries_cusip as entry (entry.cusip)}
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-static-element-interactions -->
-        <!-- <div class="cusip" on:click={() => cusipClick(entry)}>
+        <div class="cusip">
+        <div on:click={() => updateSearchParams('cusipId', entry.cusip)}>
             <div class="cusip-content">
-                {entry.name}<br>
-                {entry.value}$
+                {entry.name_of_issuer}<br>
             </div>
             <div class="cusip-id">
             {entry.cusip}
             </div>
+          </div>
+            <br>
+            <div on:click={() => updateSearchParams('cusipId2', entry.cusip)}>
+              Add as cusip 2
+          </div>
         </div>
     {/each}
-    </div> -->
+  </div>
     
-<!--     
+    
     <style>
         .ciks {
             display: flex;
@@ -133,4 +146,4 @@
   padding-top: 20px;
 }
 
-    </style> -->
+</style>

@@ -1,37 +1,39 @@
 <script lang="ts">
-  import type { RowData } from "duckdb-async";
     import type { PageData } from "./$types";
-    import { page } from "$app/stores";
-  import { goto } from "$app/navigation";
-    export let data : PageData;
-    // $: console.log(typeof data.entries)
+  export let data: PageData;
 
-    let cusipId: string;
-    $: cusip = data.entries.find((d) => d.cusip === cusipId);
-
-    const cusipClick = (entry: RowData) => {
-        cusipId = entry.cusip; 
-        // console.log(cusipId)  
-        goto(`?cusipId=${cusipId}`);
-}
-$: console.log('console.log for searchparams', $page.url.searchParams.get('cusipId'))
 </script>
-<h1>{cusipId}</h1>
-<h1>{cusip?.name}</h1>
+
+{#each data.cik as entry, i}
+<tr> {i + 1} -- {entry.cik} -- {entry.quarter}</tr>
+
+  <!-- <td>{i + 1} <br></td> -->
+
+{/each}
+
+
+{#each data.cusip as entry2, i}
+
+<tr> {i + 1} -- {entry2.cusip} -- {entry2.cusip_ticker}</tr>
+  <!-- <td>{i + 1} <br></td> -->
+
+{/each}
+<!-- <h1>{cusipId}</h1>
+<h1>{cusip?.name}</h1> -->
 
 <!-- {JSON.stringify(Object.keys(data), null, 2)} -->
 
-<div class="ciks">
+<!-- <div class="ciks">
 {#each data.entries2 as entry (entry.cik)}
     <div class='cik'>{entry.cik}</div>
 {/each}
-</div>
+</div> -->
   
-<div class="cusips">
-{#each data.entries as entry (entry.cusip)}
+<!-- <div class="cusips">
+{#each data.entries as entry (entry.cusip)} -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-static-element-interactions -->
-        <div class="cusip" on:click={() => cusipClick(entry)}>
+        <!-- <div class="cusip" on:click={() => cusipClick(entry)}>
             <div class="cusip-content">
                 {entry.name}<br>
                 {entry.value}$
@@ -41,9 +43,9 @@ $: console.log('console.log for searchparams', $page.url.searchParams.get('cusip
             </div>
         </div>
     {/each}
-    </div>
+    </div> -->
     
-    
+<!--     
     <style>
         .ciks {
             display: flex;
@@ -131,4 +133,4 @@ $: console.log('console.log for searchparams', $page.url.searchParams.get('cusip
   padding-top: 20px;
 }
 
-    </style>
+    </style> -->

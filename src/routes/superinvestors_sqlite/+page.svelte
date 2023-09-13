@@ -19,8 +19,16 @@
 
 </script>
 
-{#each data.cik as result, i}
-<tr> {i + 1} -- {result} -- {result} </tr>
+{#each data.cik as cik, i}
+<tr> {i + 1} -- {cik.cik} -- {cik.quarter} </tr>
+  <!-- <td>{i + 1} <br></td>
+  <td>{cik.cik} </td>
+  <td>{cik.cik_name} </td> -->
+<!-- </tr> -->
+{/each}
+
+{#each data.cusip as cusip, i}
+<tr> {i + 1} -- {cusip.cusip} -- {cusip.cusip_ticker} </tr>
   <!-- <td>{i + 1} <br></td>
   <td>{cik.cik} </td>
   <td>{cik.cik_name} </td> -->

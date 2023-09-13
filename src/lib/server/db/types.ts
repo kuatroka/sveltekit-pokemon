@@ -27,8 +27,9 @@ export type Cik = {
 };
 
 export type Cusip = {
-	cusip: number;
+	cusip: string;
 	name_of_issuer: string;
 	cusip_ticker: string;
 	quarter: string;
+	value: number;
 };
