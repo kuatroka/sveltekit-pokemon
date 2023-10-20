@@ -10,7 +10,7 @@
     export let data: PageData;
 
     let quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
-    let colors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple']
+    let colors = ['red', 'orange', 'yellow', 'green', 'blue']
     $: selectedQuarter = $page.url.searchParams.get('quarter') || 'Q4';
 
     let form = {
